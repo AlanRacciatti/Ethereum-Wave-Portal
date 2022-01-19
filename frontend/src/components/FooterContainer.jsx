@@ -14,7 +14,7 @@ const FooterContainer = () => {
           </div>
           <div className='footer-container-small'>
             <img alt="Ethereum Logo" className="eth-logo" src={githubLogo} />
-            <a className="footer-text" href="https://github.com/AlanRacciatti/lol-nft-collection" target="_blank" rel="noreferrer">Github</a>
+            <a className="footer-text" href="https://github.com/AlanRacciatti/Ethereum-Wave-Portal" target="_blank" rel="noreferrer">Github</a>
           </div>
           <div className='footer-container-small'>
             <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
