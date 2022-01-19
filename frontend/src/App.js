@@ -20,7 +20,6 @@ export default function App() {
         let chainId = window.ethereum.chainId;
         
         if (chainId !== "0x4") {
-          console.log(chainId)
           await window.ethereum.request({
             method: "wallet_switchEthereumChain",
             params: [
@@ -42,7 +41,7 @@ export default function App() {
     };
   };
 
-  const contractAddress = "0x97585945E9d2d0d19Ff0BC39A42024590EaAbd36";
+  const contractAddress = "0x64F5531a917D58A0fed87bE1DD9F9C9226933068";
 
   const contractABI = abi.abi;
 
@@ -68,13 +67,6 @@ export default function App() {
     try {
       const { ethereum } = window;
   
-      if (!ethereum) {
-        console.log("Make sure you have metamask!");
-        return
-      } else {
-        console.log("We have the ethereum object: ", ethereum);
-      };
-
       const accounts = await ethereum.request({ method: 'eth_accounts' });
       if (accounts.length > 0) {
         setCurrentAccount(accounts[0])
@@ -122,7 +114,6 @@ export default function App() {
 
       const accounts = await ethereum.request({ method: "eth_requestAccounts" });
 
-      console.log("Connected", accounts[0]);
       setCurrentAccount(accounts[0]);
     } catch (error) {
       console.error(error);
@@ -140,10 +131,8 @@ export default function App() {
         const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
 
         let count = await wavePortalContract.getTotalWaves();
-        console.log(count)
 
         const waveTxn = await wavePortalContract.wave(message, { gasLimit: 300000 });
-        console.log("Mining...", waveTxn.hash);
 
         awaitTransaction.current.className = awaitTransaction.current.className.replace("d-none", "");
 
@@ -151,10 +140,7 @@ export default function App() {
 
         awaitTransaction.current.className += " d-none";
 
-        console.log("Mined -- ", waveTxn.hash);
-
         count = await wavePortalContract.getTotalWaves();
-        console.log("Retrieved total wave count...", count.toNumber());
       }
     } catch (error) {
       console.error(error); 
@@ -165,7 +151,6 @@ export default function App() {
     let wavePortalContract;
 
     const onNewWave = (from, timestamp, message) => {
-      console.log("NewWave", from, timestamp, message);
       getWaveCount()
       setAllWaves(prevState => [
         ...prevState,
