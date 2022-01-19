@@ -15,6 +15,7 @@ import WaveCounter from './components/WaveCounter';
 import WaitingContainer from './components/WaitingContainer';
 import ConnectWalletContainer from './components/ConnectWalletContainer';
 import AllWavesContainer from './components/AllWavesContainer';
+import FooterContainer from './components/FooterContainer';
 
 export default function App() {
 
@@ -177,8 +178,9 @@ export default function App() {
         <WaveCounter waveCount={waveCount} />
         <WaitingContainer containerRef={awaitTransactionContainer}/>
         {!currentAccount && <ConnectWalletContainer currentAccount={currentAccount} connectWallet={connectWallet} />}
-        <AllWavesContainer allWaves={allWaves} />       
+        <AllWavesContainer allWaves={allWaves} />      
       </div>
+      <FooterContainer /> 
     </div>
   );
 }
