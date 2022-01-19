@@ -10,7 +10,7 @@ export default function App() {
   const [waveCount, setWaveCount] = useState(0);
   const [allWaves, setAllWaves] = useState([]);
   const [error, setError] = useState();
-  const awaitTransaction = useRef(null);
+  const awaitTransactionContainer = useRef(null);
 
   const changeNetworkRinkeby = async (setError) => {
     try {
@@ -130,15 +130,13 @@ export default function App() {
         const signer = provider.getSigner();
         const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        let count = await wavePortalContract.getTotalWaves();
+        const waveTxn = await wavePortalContract.wave(message);
 
-        const waveTxn = await wavePortalContract.wave(message, { gasLimit: 300000 });
-
-        awaitTransaction.current.className = awaitTransaction.current.className.replace("d-none", "");
+        awaitTransactionContainer.current.className = awaitTransactionContainer.current.className.replace("d-none", "");
 
         await waveTxn.wait();
 
-        awaitTransaction.current.className += " d-none";
+        awaitTransactionContainer.current.className += " d-none";
 
         count = await wavePortalContract.getTotalWaves();
       }
@@ -205,7 +203,7 @@ export default function App() {
         </button>
         </div>
 
-        <div className="waitingGif d-none" ref={awaitTransaction}>
+        <div className="waitingGif d-none" ref={awaitTransactionContainer}>
           <p>Writing your message in the blockchain. Please wait</p>
           
           <div>
