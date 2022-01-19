@@ -1,8 +1,19 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ethers } from 'ethers';
 import './App.css';
-import abi from './utils/WavePortal.json'
-import { Spinner } from 'react-bootstrap';
+import { ContractAddress } from './utils/ContractAddress.json';
+import { abi } from './utils/WavePortal.json';
+
+// **** Functions ****
+import {switchToRinkebyNetwork} from './functions/switchToRinkebyNetwork';
+
+// **** Components ****
+import Header from './components/Header';
+import WaveBtn from './components/WaveBtn';
+import WaveCounter from './components/WaveCounter';
+import WaitingContainer from './components/WaitingContainer';
+import ConnectWalletContainer from './components/ConnectWalletContainer';
+import AllWavesContainer from './components/AllWavesContainer';
 
 export default function App() {
 
@@ -10,41 +21,11 @@ export default function App() {
   const [waveCount, setWaveCount] = useState(0);
   const [allWaves, setAllWaves] = useState([]);
   const awaitTransactionContainer = useRef(null);
-
-  const changeNetworkRinkeby = async () => {
-    try {
-      if (!window.ethereum) throw new Error("No crypto wallet found");
-
-      setTimeout(async () => {
-        let chainId = window.ethereum.chainId;
-        
-        if (chainId !== "0x4") {
-          await window.ethereum.request({
-            method: "wallet_switchEthereumChain",
-            params: [
-              {
-                chainId: '0x4'
-              }
-            ]
-          }); 
   
-          window.location.reload();
+  const contractAddress = ContractAddress;
+  const contractABI = abi;
 
-        };
-        
-      }, 500);
-      
-
-    } catch (error) {
-      console.error(error);
-    };
-  };
-
-  const contractAddress = "0x64F5531a917D58A0fed87bE1DD9F9C9226933068";
-
-  const contractABI = abi.abi;
-
-  const getWaveCount = async () => {
+  const updateWaveCount = async () => {
     try {
       const { ethereum } = window;
 
@@ -76,7 +57,7 @@ export default function App() {
     };
   }
 
-  const getAllWaves = async () => {
+  const updateAllWaves = async () => {
     try {
       const { ethereum } = window;
       if (ethereum) {
@@ -120,6 +101,7 @@ export default function App() {
   }
 
   const wave = async () => {
+
     try {
       const { ethereum } = window;
 
@@ -136,101 +118,54 @@ export default function App() {
         await waveTxn.wait();
 
         awaitTransactionContainer.current.className += " d-none";
-
-        let count = await wavePortalContract.getTotalWaves();
       }
     } catch (error) {
       console.error(error); 
     }
+}
+
+  const setupEventListener = () => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+        
+        wavePortalContract.on("NewWave", (from, timestamp, message) => {
+          updateWaveCount();
+          setAllWaves(prevState => [
+            ...prevState,
+            {
+              address: from,
+              timestamp: new Date(timestamp * 1000),
+              message: message
+            }
+          ])
+        });
+        }
+
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
-    let wavePortalContract;
-
-    const onNewWave = (from, timestamp, message) => {
-      getWaveCount()
-      setAllWaves(prevState => [
-        ...prevState,
-        {
-          address: from,
-          timestamp: new Date(timestamp * 1000),
-          message: message
-        }
-      ]);
-    };
-
-    if (window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-
-      wavePortalContract= new ethers.Contract(contractAddress, contractABI, signer);
-      wavePortalContract.on("NewWave", onNewWave);
-
-      return () => {
-        if (wavePortalContract) {
-          wavePortalContract.off("NewWave", onNewWave);
-        }
-      };
-    };
-  }, []);
-  
-
-  useEffect(() => {
     checkIfWalletIsConnect();
-    getAllWaves();
-    getWaveCount();
+    updateAllWaves();
+    updateWaveCount();
+    setupEventListener();
   }, [])
 
   return (
-    <div className="mainContainer" onLoad={() => changeNetworkRinkeby()}>
+    <div className="mainContainer" onLoad={() => switchToRinkebyNetwork()}>
       <div className="dataContainer">
-        <div className="header">
-        <span role="img" aria-label="wave">👋</span> Benvenuti!
-        </div>
-
-        <div className="bio">
-        I am Chiin and I like milanesas
-        </div>
-
-        <button className="waveButton margin-wave-btn" onClick={wave}>
-          Wave at Me
-        </button>
-
-        <div className="container-wave">
-        <button className="waveButton waves-number-btn w-100 pe-none">
-          Number of waves: {waveCount}
-        </button>
-        </div>
-
-        <div className="waitingGif d-none" ref={awaitTransactionContainer}>
-          <p>Writing your message in the blockchain. Please wait</p>
-          
-          <div>
-          <img src="https://c.tenor.com/AspjzmOgmVMAAAAM/pickaxe-rock.gif" alt="waiting gif"/>
-          </div>
-
-          <div className="mt-10">
-            <Spinner animation="border" role="status" className="m-auto">
-              <span className="visually-hidden">Loading...</span>
-            </Spinner>
-          </div>
-
-        </div>
-
-        {!currentAccount && (
-        <button className="waveButton loginButton" onClick={connectWallet}>
-          Connect Wallet
-        </button>
-        )}
-
-        {allWaves.map((wave, index) => {
-          return (
-            <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
-              <div>Address: {wave.address}</div>
-              <div>Time: {wave.timestamp.toString()}</div>
-              <div>Message: {wave.message}</div>
-            </div>)
-        })}
+        <Header />
+        <WaveBtn wave={wave} />
+        <WaveCounter waveCount={waveCount} />
+        <WaitingContainer containerRef={awaitTransactionContainer}/>
+        {!currentAccount && <ConnectWalletContainer currentAccount={currentAccount} connectWallet={connectWallet} />}
+        <AllWavesContainer allWaves={allWaves} />       
       </div>
     </div>
   );

@@ -55,6 +55,12 @@
   margin-bottom: 10px;
 }
 
+.wave-container {
+  background-color: oldlace;
+  margin-top: 16px;
+  padding: 8px;
+}
+
 .waitingGif {
   text-align: center;
   padding-bottom: 20px;
