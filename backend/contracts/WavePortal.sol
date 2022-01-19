@@ -22,13 +22,12 @@ contract WavePortal {
 
     constructor() payable {
         console.log("This contract can pay!");
-
         seed = (block.timestamp + block.difficulty) % 100;
     }
 
     function wave(string memory _message) public {
 
-        require(lastWavedAt[msg.sender] + 15 seconds < block.timestamp, "Wait 15m");
+        require(lastWavedAt[msg.sender] + 15 minutes < block.timestamp, "Wait 15m");
 
         totalWaves += 1;
         console.log("%s has waved!", msg.sender);
