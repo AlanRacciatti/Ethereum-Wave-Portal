@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import './App.css';
 import { ContractAddress } from './utils/ContractAddress.json';
 import { abi } from './utils/WavePortal.json';
+import  swal  from 'sweetalert'
 
 // **** Functions ****
 import {switchToRinkebyNetwork} from './functions/switchToRinkebyNetwork';
@@ -106,18 +107,29 @@ export default function App() {
       const { ethereum } = window;
 
       if (ethereum) {
-        const message = prompt("Your message")
         const provider = new ethers.providers.Web3Provider(ethereum);
         const signer = provider.getSigner();
         const wavePortalContract = new ethers.Contract(contractAddress, contractABI, signer);
 
-        const waveTxn = await wavePortalContract.wave(message);
-
-        awaitTransactionContainer.current.className = awaitTransactionContainer.current.className.replace("d-none", "");
-
-        await waveTxn.wait();
-
-        awaitTransactionContainer.current.className += " d-none";
+        if (await wavePortalContract.canWave(signer.getAddress())) {
+          const message = await swal({
+            text: 'Put your message here...',
+            content: "input",
+            button: {
+              text: "Wave!",
+            },
+          })
+          const waveTxn = await wavePortalContract.wave(message);
+  
+          awaitTransactionContainer.current.className = awaitTransactionContainer.current.className.replace("d-none", "");
+  
+          await waveTxn.wait();
+  
+          awaitTransactionContainer.current.className += " d-none";
+        } else {
+          swal ("Oops" , "You have to wait 15 minutes until sending another wave",  "error" )
+        }
+        
       }
     } catch (error) {
       console.error(error); 
