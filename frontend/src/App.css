@@ -1,0 +1,66 @@
+.mainContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 64px;
+}
+
+.dataContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 600px;
+}
+
+.header {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.bio {
+  text-align: center;
+  color: gray;
+  margin-top: 16px;
+}
+
+.waveButton {
+  cursor: pointer;
+  margin-top: 16px;
+  padding: 8px;
+  color: #fff;
+  border: 0;
+  border-radius: 5px;
+  background-color: #002fff;
+}
+
+.loginButton {
+  background-color: #ff4500;
+}
+
+.container-wave {
+  display: flex;
+  justify-content: space-between;
+}
+
+.container-wave button {
+  margin: 2px 5px;
+}
+
+.waves-number-btn {
+  background-color: #8b00fb;
+}
+
+.margin-wave-btn {
+  margin-bottom: 10px;
+}
+
+.waitingGif {
+  text-align: center;
+  padding-bottom: 20px;
+  margin-top: 10px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
