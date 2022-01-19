@@ -4,17 +4,7 @@ const main = async () => {
     const waveContract = await waveContractFactory.deploy();
     await waveContract.deployed();
 
-    console.log("Running first txn");
-    let txn = await waveContract.wave("hey");
-    txn = await txn.wait();
-    
-    console.log("Running second txn");
-    txn = await waveContract.wave("hey");
-    txn = await txn.wait();
-    
-    
-    
-    
+    console.log(`The contract was compiled and deployed successfully! \nContract address: ${waveContract.address}`);
   };
   
   const runMain = async () => {
