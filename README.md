@@ -1,4 +1,5 @@
 # Ethereum Wave Portal
+#### [Link to the project](https://chin-wave-project.web.app/)
 
 ### Welcome!
 This is a project working with solidity and ethers.js to make a portal that allows user to write a message in the blockchain, including the address which wrote it and a timestamp. At first you'll can see two folders, the first one is the backend with the smart contract and the second one the react app, feel free to check them both :)
