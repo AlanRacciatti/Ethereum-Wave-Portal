@@ -1,10 +1,19 @@
 const main = async () => {
-  
+
     const waveContractFactory = await hre.ethers.getContractFactory('WavePortal');
-    const waveContract = await waveContractFactory.deploy({
-      value: hre.ethers.utils.parseEther('0.1'),
-    });
+    const waveContract = await waveContractFactory.deploy();
     await waveContract.deployed();
+
+    console.log("Running first txn");
+    let txn = await waveContract.wave("hey");
+    txn = await txn.wait();
+    
+    console.log("Running second txn");
+    txn = await waveContract.wave("hey");
+    txn = await txn.wait();
+    
+    
+    
     
   };
   
