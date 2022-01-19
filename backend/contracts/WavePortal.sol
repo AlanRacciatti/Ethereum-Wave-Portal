@@ -43,4 +43,12 @@ contract WavePortal {
     function getTotalWaves() public view returns (uint256) {
         return totalWaves;
     }
+
+    function canWave(address addr) public view returns (bool) {
+        if (lastWavedAt[addr] + waveCooldown < block.timestamp) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
