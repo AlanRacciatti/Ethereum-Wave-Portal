@@ -9,10 +9,9 @@ export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [waveCount, setWaveCount] = useState(0);
   const [allWaves, setAllWaves] = useState([]);
-  const [error, setError] = useState();
   const awaitTransactionContainer = useRef(null);
 
-  const changeNetworkRinkeby = async (setError) => {
+  const changeNetworkRinkeby = async () => {
     try {
       if (!window.ethereum) throw new Error("No crypto wallet found");
 
@@ -37,7 +36,7 @@ export default function App() {
       
 
     } catch (error) {
-      setError(error.mesage)
+      console.error(error);
     };
   };
 
@@ -138,7 +137,7 @@ export default function App() {
 
         awaitTransactionContainer.current.className += " d-none";
 
-        count = await wavePortalContract.getTotalWaves();
+        let count = await wavePortalContract.getTotalWaves();
       }
     } catch (error) {
       console.error(error); 
@@ -183,7 +182,7 @@ export default function App() {
   }, [])
 
   return (
-    <div className="mainContainer" onLoad={() => changeNetworkRinkeby(setError)}>
+    <div className="mainContainer" onLoad={() => changeNetworkRinkeby()}>
       <div className="dataContainer">
         <div className="header">
         <span role="img" aria-label="wave">👋</span> Benvenuti!
