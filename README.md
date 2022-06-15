@@ -8,7 +8,7 @@ This is a project working with solidity and ethers.js to make a portal that allo
 
 - [Portal preview](#portal-preview)
 - [Frontend](#frontend)
-- [Backend](#backend)
+- [Smart Contract](#smart-contract)
 - [About the project](#about-the-project)
 
 ### Portal preview
@@ -42,7 +42,7 @@ If you want to run your own contract in this app you need to do 2 things:
 }
 ```
 - Update the JSON  in the **Utils** folder (you get this from your artifacts folder of the smart contract).
-## Backend
+## Smart contract
 ### Installation and usage
 As before use the package manager [npm](https://www.npmjs.com/) to install the frontend
 ```bash
